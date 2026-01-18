@@ -25,10 +25,7 @@
         protected MediaFrame(AVFrame* pointer, MediaComponent component, MediaType mediaType)
             : this((void*)pointer, component, mediaType)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            var packetSize = pointer->pkt_size;
-#pragma warning restore CS0618 // Type or member is obsolete
-            CompressedSize = packetSize > 0 ? packetSize : 0;
+            CompressedSize = (int)pointer->opaque;
             PresentationTime = pointer->pts;
             DecodingTime = pointer->pkt_dts;
         }

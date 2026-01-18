@@ -719,7 +719,7 @@ internal sealed unsafe class MediaContainer : IDisposable, ILoggingSource
                 }
             }
 
-            ffmpeg.av_format_inject_global_side_data(InputContext);
+            // ffmpeg.av_format_inject_global_side_data(InputContext);
 
             // This is useful for file formats with no headers such as MPEG. This function also computes
             // the real frame-rate in case of MPEG-2 repeat frame mode.
@@ -822,7 +822,7 @@ internal sealed unsafe class MediaContainer : IDisposable, ILoggingSource
         // InputContext->flags |= opts.FlagKeepSideData ? ffmpeg.AVFMT_FLAG_KEEP_SIDE_DATA : InputContext->flags;
         InputContext->flags |= opts.FlagNoBuffer ? ffmpeg.AVFMT_FLAG_NOBUFFER : InputContext->flags;
         InputContext->flags |= opts.FlagSortDts ? ffmpeg.AVFMT_FLAG_SORT_DTS : InputContext->flags;
-        InputContext->flags |= opts.FlagStopAtShortest ? ffmpeg.AVFMT_FLAG_SHORTEST : InputContext->flags;
+        ////InputContext->flags |= opts.FlagStopAtShortest ? ffmpeg.AVFMT_FLAG_SHORTEST : InputContext->flags;
 
         InputContext->seek2any = opts.SeekToAny ? 1 : 0;
 
@@ -997,6 +997,8 @@ internal sealed unsafe class MediaContainer : IDisposable, ILoggingSource
         // Push a data packet if its not a media component.
         if (Data.TryHandleDataPacket(this, readPacket))
             return MediaType.None;
+
+        readPacket.Pointer->opaque = (void*)readPacket.Pointer->size;
 
         var componentType = Components.SendPacket(readPacket);
 

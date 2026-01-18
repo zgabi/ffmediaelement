@@ -66,10 +66,8 @@ internal sealed unsafe class VideoComponent : MediaComponent
         FrameHeight = CodecContext->height;
 
         // Retrieve Matrix Rotation
-#pragma warning disable CS0618 // Type or member is obsolete
-        var displayMatrixRef = ffmpeg.av_stream_get_side_data(Stream, AVPacketSideDataType.AV_PKT_DATA_DISPLAYMATRIX, null);
-#pragma warning restore CS0618 // Type or member is obsolete
-        DisplayRotation = ComputeRotation(displayMatrixRef);
+        var displayMatrixRef = ffmpeg.av_packet_side_data_get(Stream->codecpar->coded_side_data, Stream->codecpar->nb_coded_side_data, AVPacketSideDataType.AV_PKT_DATA_DISPLAYMATRIX);
+        DisplayRotation = displayMatrixRef == null ? 0 : ComputeRotation(displayMatrixRef->data);
 
         var aspectRatio = ffmpeg.av_d2q((double)FrameWidth / FrameHeight, int.MaxValue);
         DisplayAspectWidth = aspectRatio.num;
@@ -89,7 +87,7 @@ internal sealed unsafe class VideoComponent : MediaComponent
     /// Point / nearest-neighbor is the default and it is the cheapest. This is by design as
     /// we don't change the dimensions of the image. We only do color conversion.
     /// </summary>
-    public static int ScalerFlags { get; internal set; } = ffmpeg.SWS_POINT;
+    public static SwsFlags ScalerFlags { get; internal set; } = SwsFlags.SWS_POINT;
 
     /// <summary>
     /// Gets the base frame rate as reported by the stream component.
@@ -223,7 +221,7 @@ internal sealed unsafe class VideoComponent : MediaComponent
             source.Pointer->width,
             source.Pointer->height,
             Constants.VideoPixelFormat,
-            ScalerFlags,
+            (int)ScalerFlags,
             null,
             null,
             null);
