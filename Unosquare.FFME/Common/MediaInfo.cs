@@ -138,8 +138,8 @@
                     ColorRange = codecContext->color_range,
                     PixelWidth = codecContext->width,
                     PixelHeight = codecContext->height,
-                    HasClosedCaptions = (codecContext->properties & ffmpeg.FF_CODEC_PROPERTY_CLOSED_CAPTIONS) != 0,
-                    IsLossless = (codecContext->properties & ffmpeg.FF_CODEC_PROPERTY_LOSSLESS) != 0,
+                    ////HasClosedCaptions = (codecContext->properties & ffmpeg.FF_CODEC_PROPERTY_CLOSED_CAPTIONS) != 0,
+                    ////IsLossless = (codecContext->properties & ffmpeg.FF_CODEC_PROPERTY_LOSSLESS) != 0,
                     Channels = codecContext->ch_layout.nb_channels,
                     BitRate = bitsPerSample > 0 ?
                         bitsPerSample * codecContext->ch_layout.nb_channels * codecContext->sample_rate :
